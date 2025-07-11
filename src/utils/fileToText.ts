@@ -1,18 +1,20 @@
-import * as pdfjsLib from "pdfjs-dist";
+import { getDocument, GlobalWorkerOptions } from "pdfjs-dist";
 import pdfjsWorker from "pdfjs-dist/build/pdf.worker?worker";
-pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
+GlobalWorkerOptions.workerSrc = (pdfjsWorker as unknown as { default: string }).default;
 import mammoth from "mammoth";
 
 export async function fileToText(file: File): Promise<string> {
   if (file.type === "application/pdf") {
     // PDF extraction
     const arrayBuffer = await file.arrayBuffer();
-    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+    const pdf = await getDocument({ data: arrayBuffer }).promise;
     let text = "";
     for (let i = 1; i <= pdf.numPages; i++) {
       const page = await pdf.getPage(i);
       const content = await page.getTextContent();
-      text += content.items.map((item: { str: string }) => item.str).join(" ") + "\n";
+      text += content.items
+        .map((item: any) => 'str' in item ? item.str : '')
+        .join(" ") + "\n";
     }
     return text;
   } else if (
