@@ -1,6 +1,6 @@
 import { getDocument, GlobalWorkerOptions } from "pdfjs-dist";
-import pdfjsWorker from "pdfjs-dist/build/pdf.worker?worker";
-GlobalWorkerOptions.workerSrc = (pdfjsWorker as unknown as { default: string }).default;
+import pdfjsWorkerSrc from "pdfjs-dist/build/pdf.worker?url";
+GlobalWorkerOptions.workerSrc = pdfjsWorkerSrc;
 import mammoth from "mammoth";
 
 export async function fileToText(file: File): Promise<string> {
