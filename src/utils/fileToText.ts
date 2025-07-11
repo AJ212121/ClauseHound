@@ -1,14 +1,6 @@
-// Try modern and legacy import for pdfjs-dist
-let pdfjsLib: any;
-try {
-  pdfjsLib = require('pdfjs-dist');
-} catch (e) {
-  try {
-    pdfjsLib = require('pdfjs-dist/legacy/build/pdf');
-  } catch (e2) {
-    throw new Error('pdfjs-dist could not be loaded. Please check your installation.');
-  }
-}
+import * as pdfjsLib from "pdfjs-dist";
+import pdfjsWorker from "pdfjs-dist/build/pdf.worker?worker";
+pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 import mammoth from "mammoth";
 
 export async function fileToText(file: File): Promise<string> {
